@@ -1,0 +1,533 @@
+/* src/pages/index.module.css */
+
+/* =========================================================
+   RUKIA Home (Docusaurus-native)
+   - Sem JS de tema: usa o data-theme do próprio Docusaurus
+   - Gradientes suaves (azul/roxo)
+   - Hover com borda/halo discreto
+   - Responsivo
+========================================================= */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 5rem 0 4rem;
+  background: radial-gradient(
+      1200px 600px at 20% 10%,
+      rgba(37, 99, 235, 0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 500px at 80% 20%,
+      rgba(124, 58, 237, 0.16),
+      transparent 55%
+    ),
+    linear-gradient(135deg, rgba(15, 23, 42, 0.02), rgba(15, 23, 42, 0));
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background: radial-gradient(
+    circle at 65% 35%,
+    rgba(59, 130, 246, 0.12),
+    rgba(139, 92, 246, 0.08),
+    transparent 55%
+  );
+  filter: blur(30px);
+  opacity: 0.9;
+  animation: heroGlow 14s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes heroGlow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate3d(2%, -1%, 0) scale(1.02);
+    opacity: 1;
+  }
+}
+
+.heroContainer {
+  position: relative;
+  z-index: 1;
+}
+
+.heroInner {
+  max-width: 880px;
+}
+
+.heroTitle {
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 1rem;
+  background: linear-gradient(90deg, #2563eb, #7c3aed, #2563eb);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.heroSubtitle {
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+  line-height: 1.6;
+  margin: 0 0 1.6rem;
+  color: var(--ifm-color-emphasis-700);
+  max-width: 720px;
+}
+
+.heroButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.ctaPrimary,
+.ctaSecondary {
+  border-radius: 0.9rem !important;
+  padding: 0.9rem 1.15rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em;
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+.ctaPrimary {
+  background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
+  border: none !important;
+  box-shadow: 0 10px 26px rgba(37, 99, 235, 0.22);
+}
+
+.ctaPrimary:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.03);
+  box-shadow: 0 14px 34px rgba(37, 99, 235, 0.28);
+}
+
+.ctaSecondary {
+  background: rgba(255, 255, 255, 0.7) !important;
+  border: 1px solid rgba(17, 24, 39, 0.1) !important;
+  color: var(--ifm-font-color-base) !important;
+  backdrop-filter: blur(10px);
+}
+
+.ctaSecondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(17, 24, 39, 0.08);
+}
+
+.heroTrustLine {
+  margin-top: 1.2rem;
+  font-size: 0.98rem;
+  color: var(--ifm-color-emphasis-600);
+  border-left: 3px solid rgba(37, 99, 235, 0.6);
+  padding-left: 0.9rem;
+}
+
+/* =========================================================
+   Sections
+========================================================= */
+
+.section {
+  padding: 3.5rem 0;
+}
+
+.sectionAlt {
+  padding: 3.5rem 0;
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.04),
+    rgba(124, 58, 237, 0.035)
+  );
+  border-top: 1px solid rgba(17, 24, 39, 0.06);
+  border-bottom: 1px solid rgba(17, 24, 39, 0.06);
+}
+
+.sectionTitle {
+  font-size: clamp(1.6rem, 2vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.6rem;
+}
+
+.sectionText {
+  margin: 0 0 1.6rem;
+  color: var(--ifm-color-emphasis-700);
+  max-width: 900px;
+}
+
+/* =========================================================
+   Cards / Grid
+========================================================= */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+}
+
+.cardLinkWrapper {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  grid-column: span 6;
+}
+
+@media (max-width: 996px) {
+  .cardLinkWrapper {
+    grid-column: span 12;
+  }
+}
+
+.card {
+  border-radius: 1.25rem !important;
+  border: 1px solid rgba(17, 24, 39, 0.08) !important;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(17, 24, 39, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.cardHover {
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.cardHover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 44px rgba(17, 24, 39, 0.1);
+  border-color: rgba(37, 99, 235, 0.28) !important;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 1.25rem;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.35), rgba(124, 58, 237, 0.3));
+  opacity: 0;
+  transition: opacity 180ms ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cardHover:hover::after {
+  opacity: 0.18;
+}
+
+.cardBody {
+  position: relative;
+  z-index: 1;
+}
+
+.cardIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.14), rgba(124, 58, 237, 0.12));
+  border: 1px solid rgba(37, 99, 235, 0.12);
+  margin-bottom: 0.9rem;
+}
+
+.cardTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.cardDesc {
+  margin: 0;
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1.55;
+}
+
+.cardFooter {
+  margin-top: 1rem;
+}
+
+.cardLinkHint {
+  font-weight: 700;
+  color: rgba(37, 99, 235, 0.95);
+}
+
+/* =========================================================
+   Split (iris Spotlight)
+========================================================= */
+
+.split {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 1.2rem;
+  align-items: start;
+}
+
+@media (max-width: 996px) {
+  .split {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sectionButtons {
+  margin-top: 1rem;
+}
+
+.irisPanel {
+  border-radius: 1.25rem;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(10px);
+  padding: 1.1rem 1.1rem 1rem;
+  box-shadow: 0 10px 30px rgba(17, 24, 39, 0.06);
+}
+
+.irisRow {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.6rem 0.65rem;
+  border-radius: 0.9rem;
+  background: rgba(37, 99, 235, 0.06);
+  border: 1px solid rgba(37, 99, 235, 0.08);
+  margin-bottom: 0.55rem;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-800);
+}
+
+.irisDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.22);
+}
+
+.irisHint {
+  margin-top: 0.7rem;
+  font-size: 0.95rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+/* =========================================================
+   Maturity
+========================================================= */
+
+.maturityGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.9rem;
+  margin-top: 1.2rem;
+}
+
+@media (max-width: 996px) {
+  .maturityGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .maturityGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.maturityItem {
+  border-radius: 1.25rem;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(10px);
+  padding: 1rem 1rem 0.95rem;
+  box-shadow: 0 10px 30px rgba(17, 24, 39, 0.06);
+}
+
+.maturityKicker {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: rgba(37, 99, 235, 0.95);
+  margin-bottom: 0.35rem;
+}
+
+.maturityValue {
+  font-size: 1rem;
+  font-weight: 650;
+  color: var(--ifm-color-emphasis-800);
+}
+
+/* =========================================================
+   Audience
+========================================================= */
+
+.audienceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.9rem;
+  margin-top: 1.2rem;
+}
+
+@media (max-width: 996px) {
+  .audienceGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   Quick Links
+========================================================= */
+
+.quickGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.9rem;
+  margin-top: 1.2rem;
+}
+
+@media (max-width: 996px) {
+  .quickGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .quickGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.quickLinkWrapper {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.quickCard {
+  border-radius: 1.1rem !important;
+}
+
+.quickCardBody {
+  display: flex;
+  gap: 0.9rem;
+  align-items: center;
+}
+
+.quickIcon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.14), rgba(124, 58, 237, 0.12));
+  border: 1px solid rgba(37, 99, 235, 0.12);
+}
+
+.quickContent {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.quickTitle {
+  font-weight: 850;
+  letter-spacing: -0.01em;
+}
+
+.quickDesc {
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.heroSubtitleAlt {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: -0.5rem;
+  margin-bottom: 1.2rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
+/* =========================================================
+   Dark Mode
+========================================================= */
+
+:global(html[data-theme="dark"]) .hero {
+  background: radial-gradient(
+      1200px 600px at 20% 10%,
+      rgba(59, 130, 246, 0.22),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 500px at 80% 20%,
+      rgba(167, 139, 250, 0.18),
+      transparent 55%
+    ),
+    linear-gradient(135deg, rgba(2, 6, 23, 0.75), rgba(2, 6, 23, 0.35));
+}
+
+:global(html[data-theme="dark"]) .heroTitle {
+  background: linear-gradient(90deg, #60a5fa, #a78bfa, #60a5fa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+:global(html[data-theme="dark"]) .heroSubtitle {
+  color: rgba(226, 232, 240, 0.88);
+}
+
+:global(html[data-theme="dark"]) .heroTrustLine {
+  color: rgba(226, 232, 240, 0.78);
+  border-left-color: rgba(96, 165, 250, 0.7);
+}
+
+:global(html[data-theme="dark"]) .ctaSecondary {
+  background: rgba(15, 23, 42, 0.55) !important;
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  color: rgba(226, 232, 240, 0.92) !important;
+}
+
+:global(html[data-theme="dark"]) .card,
+:global(html[data-theme="dark"]) .maturityItem,
+:global(html[data-theme="dark"]) .irisPanel {
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.18) !important;
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.25);
+}
+
+:global(html[data-theme="dark"]) .sectionAlt {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(167, 139, 250, 0.06));
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+:global(html[data-theme="dark"]) .cardDesc,
+:global(html[data-theme="dark"]) .sectionText,
+:global(html[data-theme="dark"]) .quickDesc,
+:global(html[data-theme="dark"]) .irisHint {
+  color: rgba(226, 232, 240, 0.82);
+}
+
+:global(html[data-theme="dark"]) .cardTitle,
+:global(html[data-theme="dark"]) .sectionTitle,
+:global(html[data-theme="dark"]) .quickTitle,
+:global(html[data-theme="dark"]) .maturityValue,
+:global(html[data-theme="dark"]) .irisRow {
+  color: rgba(248, 250, 252, 0.92);
+}
+
+:global(html[data-theme="dark"]) .cardLinkHint,
+:global(html[data-theme="dark"]) .maturityKicker {
+  color: rgba(96, 165, 250, 0.95);
+}
+
+:global(html[data-theme="dark"]) .irisRow {
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(96, 165, 250, 0.12);
+}
