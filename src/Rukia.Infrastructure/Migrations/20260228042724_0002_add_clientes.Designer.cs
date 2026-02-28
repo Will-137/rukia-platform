@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Rukia.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using Rukia.Infrastructure.Persistence;
 namespace Rukia.Infrastructure.Migrations
 {
     [DbContext(typeof(RukiaDbContext))]
-    partial class RukiaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260228042724_0002_add_clientes")]
+    partial class _0002_add_clientes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

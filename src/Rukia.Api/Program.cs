@@ -1,44 +1,42 @@
 using Microsoft.EntityFrameworkCore;
 using Rukia.Infrastructure.Persistence;
 
-
-
-app.MapGet("/health/db", async (RukiaDbContext db) =>
-{
-    var ok = await db.Database.CanConnectAsync();
-    return Results.Ok(new { db = ok });
-});
-
-
-
-
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+// Controllers (necessário para /clientes via controller)
+builder.Services.AddControllers();
 
-
-
+// DbContext (services SEMPRE antes do Build)
 var cs = builder.Configuration.GetConnectionString("Default");
-
 builder.Services.AddDbContext<RukiaDbContext>(opt =>
     opt.UseNpgsql(cs));
 
+var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
+// Health DB (agora app já existe)
+app.MapGet("/health/db", async (RukiaDbContext db) =>
+{
+    var ok = await db.Database.CanConnectAsync();
+    return Results.Ok(new { db = ok });
+});
+
+// Controllers endpoints
+app.MapControllers();
+
+// (Opcional) manter seu endpoint legado de teste
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -46,7 +44,7 @@ var summaries = new[]
 
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
+    var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),

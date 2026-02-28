@@ -1,19 +1,24 @@
 using Microsoft.EntityFrameworkCore;
+using Rukia.Domain.Clientes;
 
-namespace Rukia.Infrastructure.Persistence;
-
-public class RukiaDbContext : DbContext
+namespace Rukia.Infrastructure.Persistence
 {
-	public RukiaDbContext(DbContextOptions<RukiaDbContext> options) : base(options) { }
-
-	// TODO: adicionar DbSets quando existirem entidades reais no Domain
-	// public DbSet<Cliente> Clientes => Set<Cliente>();
-
-	protected override void OnModelCreating(ModelBuilder modelBuilder)
+	public class RukiaDbContext : DbContext
 	{
-		base.OnModelCreating(modelBuilder);
+		public RukiaDbContext(DbContextOptions<RukiaDbContext> options) : base(options) { }
 
-		// TODO: aplicar configurações Fluent quando existirem
-		// modelBuilder.ApplyConfigurationsFromAssembly(typeof(RukiaDbContext).Assembly);
+		public DbSet<Cliente> Clientes => Set<Cliente>();
+
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		{
+			base.OnModelCreating(modelBuilder);
+
+			// Se já existir ApplyConfigurationsFromAssembly, mantenha.
+			modelBuilder.ApplyConfigurationsFromAssembly(typeof(RukiaDbContext).Assembly);
+
+			// Se você já estiver usando UseSnakeCaseNamingConvention no DI, não precisa aqui.
+			// (De qualquer forma, nossa config define nomes explicitamente.)
+		}
 	}
 }
+
