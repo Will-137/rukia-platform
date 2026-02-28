@@ -52,11 +52,10 @@ namespace Rukia.Infrastructure.Persistence.Configurations
                 .HasDefaultValueSql("timezone('utc', now())")
                 .IsRequired();
 
-            // ✅ Índices: usar a propriedade CLR (Documento) — NÃO usar "documento" string
-            builder.HasIndex(x => x.Documento)
-                .HasDatabaseName("ix_clientes_documento")
+            // Índices: usar a propriedade CLR (Documento) — NÃO usar "documento" string
+            builder.HasIndex(x => x.Documento)                
                 .IsUnique()
-                .HasFilter("documento IS NOT NULL");
+                .HasFilter("\"ativo\" = true AND \"documento\" IS NOT NULL");
 
             builder.HasIndex(x => x.Email)
                 .HasDatabaseName("ix_clientes_email")

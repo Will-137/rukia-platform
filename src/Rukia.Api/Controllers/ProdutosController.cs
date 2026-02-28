@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 using Rukia.Api.Contracts;
 using Rukia.Api.Contracts.Produtos;
+using Rukia.Api.Errors;
 using Rukia.Domain.Produtos;
 using Rukia.Domain.Produtos.ValueObjects;
 using Rukia.Infrastructure.Persistence;
@@ -16,10 +16,7 @@ public sealed class ProdutosController : ControllerBase
 {
     private readonly RukiaDbContext _db;
 
-    public ProdutosController(RukiaDbContext db)
-    {
-        _db = db;
-    }
+    public ProdutosController(RukiaDbContext db) => _db = db;
 
     [HttpPost]
     [ProducesResponseType(typeof(ProdutoResponse), StatusCodes.Status201Created)]
@@ -27,44 +24,23 @@ public sealed class ProdutosController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Create([FromBody] CreateProdutoRequest request, CancellationToken ct)
     {
-        try
-        {
-            var codigo = CodigoProduto.Create(request.Codigo);
-            var unidade = UnidadeMedida.Create(request.UnidadeMedida);
+        var codigo = CodigoProduto.Create(request.Codigo);
+        var unidade = UnidadeMedida.Create(request.UnidadeMedida);
 
-            var produto = new Produto(
-                id: Guid.NewGuid(),
-                codigo: codigo,
-                nome: request.Nome,
-                descricao: request.Descricao,
-                categoria: request.Categoria,
-                unidadeMedida: unidade
-            );
+        var produto = new Produto(
+            id: Guid.NewGuid(),
+            codigo: codigo,
+            nome: request.Nome,
+            descricao: request.Descricao,
+            categoria: request.Categoria,
+            unidadeMedida: unidade
+        );
 
-            _db.Produtos.Add(produto);
-            await _db.SaveChangesAsync(ct);
+        _db.Produtos.Add(produto);
+        await _db.SaveChangesAsync(ct);
 
-            var response = Map(produto);
-            return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(new ProblemDetails
-            {
-                Title = "Erro de validação",
-                Detail = ex.Message,
-                Status = StatusCodes.Status400BadRequest
-            });
-        }
-        catch (DbUpdateException ex) when (IsUniqueViolation(ex))
-        {
-            return Conflict(new ProblemDetails
-            {
-                Title = "Conflito de dados",
-                Detail = "Já existe um produto ativo com o mesmo código.",
-                Status = StatusCodes.Status409Conflict
-            });
-        }
+        var response = Map(produto);
+        return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
 
     [HttpGet("{id:guid}")]
@@ -76,12 +52,12 @@ public sealed class ProdutosController : ControllerBase
 
         if (produto is null)
         {
-            return NotFound(new ProblemDetails
-            {
-                Title = "Não encontrado",
-                Detail = "Produto não encontrado.",
-                Status = StatusCodes.Status404NotFound
-            });
+            return NotFound(ApiProblemDetails.Create(
+                status: StatusCodes.Status404NotFound,
+                title: "Não encontrado",
+                detail: "Produto não encontrado.",
+                errorCode: ErrorCodes.ProdutoNaoEncontrado
+            ));
         }
 
         return Ok(Map(produto));
@@ -98,12 +74,12 @@ public sealed class ProdutosController : ControllerBase
     {
         if (page <= 0 || pageSize <= 0)
         {
-            return BadRequest(new ProblemDetails
-            {
-                Title = "Erro de validação",
-                Detail = "Parâmetros de paginação inválidos.",
-                Status = StatusCodes.Status400BadRequest
-            });
+            return BadRequest(ApiProblemDetails.Create(
+                status: StatusCodes.Status400BadRequest,
+                title: "Erro de validação",
+                detail: "Parâmetros de paginação inválidos.",
+                errorCode: ErrorCodes.ValidacaoRequisicaoInvalida
+            ));
         }
 
         var query = _db.Produtos.AsQueryable();
@@ -133,48 +109,26 @@ public sealed class ProdutosController : ControllerBase
         var produto = await _db.Produtos.FirstOrDefaultAsync(x => x.Id == id, ct);
         if (produto is null)
         {
-            return NotFound(new ProblemDetails
-            {
-                Title = "Não encontrado",
-                Detail = "Produto não encontrado.",
-                Status = StatusCodes.Status404NotFound
-            });
+            return NotFound(ApiProblemDetails.Create(
+                status: StatusCodes.Status404NotFound,
+                title: "Não encontrado",
+                detail: "Produto não encontrado.",
+                errorCode: ErrorCodes.ProdutoNaoEncontrado
+            ));
         }
 
-        try
-        {
-            var unidade = UnidadeMedida.Create(request.UnidadeMedida);
+        var unidade = UnidadeMedida.Create(request.UnidadeMedida);
 
-            // método canônico que vamos manter no Domain
-            produto.AtualizarDados(
-                nome: request.Nome,
-                descricao: request.Descricao,
-                categoria: request.Categoria,
-                unidadeMedida: unidade
-            );
+        produto.AtualizarDados(
+            nome: request.Nome,
+            descricao: request.Descricao,
+            categoria: request.Categoria,
+            unidadeMedida: unidade
+        );
 
-            await _db.SaveChangesAsync(ct);
+        await _db.SaveChangesAsync(ct);
 
-            return Ok(Map(produto));
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(new ProblemDetails
-            {
-                Title = "Erro de validação",
-                Detail = ex.Message,
-                Status = StatusCodes.Status400BadRequest
-            });
-        }
-        catch (DbUpdateException ex) when (IsUniqueViolation(ex))
-        {
-            return Conflict(new ProblemDetails
-            {
-                Title = "Conflito de dados",
-                Detail = "Já existe um produto ativo com o mesmo código.",
-                Status = StatusCodes.Status409Conflict
-            });
-        }
+        return Ok(Map(produto));
     }
 
     [HttpDelete("{id:guid}")]
@@ -185,12 +139,12 @@ public sealed class ProdutosController : ControllerBase
         var produto = await _db.Produtos.FirstOrDefaultAsync(x => x.Id == id, ct);
         if (produto is null)
         {
-            return NotFound(new ProblemDetails
-            {
-                Title = "Não encontrado",
-                Detail = "Produto não encontrado.",
-                Status = StatusCodes.Status404NotFound
-            });
+            return NotFound(ApiProblemDetails.Create(
+                status: StatusCodes.Status404NotFound,
+                title: "Não encontrado",
+                detail: "Produto não encontrado.",
+                errorCode: ErrorCodes.ProdutoNaoEncontrado
+            ));
         }
 
         produto.Desativar();
@@ -211,7 +165,4 @@ public sealed class ProdutosController : ControllerBase
             p.CreatedAtUtc,
             p.UpdatedAtUtc
         );
-
-    private static bool IsUniqueViolation(DbUpdateException ex)
-        => ex.InnerException is PostgresException pg && pg.SqlState == PostgresErrorCodes.UniqueViolation;
 }

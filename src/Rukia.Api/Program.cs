@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Rukia.Api.Errors;
 using Rukia.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,13 +9,29 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Controllers (necessário para /clientes via controller)
+// Controllers
 builder.Services.AddControllers();
 
-// DbContext (services SEMPRE antes do Build)
+// DbContext
 var cs = builder.Configuration.GetConnectionString("Default");
-builder.Services.AddDbContext<RukiaDbContext>(opt =>
-    opt.UseNpgsql(cs));
+builder.Services.AddDbContext<RukiaDbContext>(opt => opt.UseNpgsql(cs));
+
+// Middleware de exceção (DI)
+builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+
+// Padroniza resposta de validação automática (model binding / data annotations)
+builder.Services.Configure<ApiBehaviorOptions>(opt =>
+{
+    opt.InvalidModelStateResponseFactory = ctx =>
+    {
+        var vpd = ApiProblemDetails.CreateValidation(
+            ctx.ModelState,
+            ErrorCodes.ValidacaoRequisicaoInvalida
+        );
+
+        return new BadRequestObjectResult(vpd);
+    };
+});
 
 var app = builder.Build();
 
@@ -24,9 +42,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// app.UseHttpsRedirection();
+// Middleware global de exceção (antes de mapear endpoints)
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-// Health DB (agora app já existe)
+// Health DB
 app.MapGet("/health/db", async (RukiaDbContext db) =>
 {
     var ok = await db.Database.CanConnectAsync();
@@ -36,7 +55,7 @@ app.MapGet("/health/db", async (RukiaDbContext db) =>
 // Controllers endpoints
 app.MapControllers();
 
-// (Opcional) manter seu endpoint legado de teste
+// (Opcional) manter endpoint legado de teste
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
