@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Rukia.Domain.Clientes;
 
@@ -52,8 +52,8 @@ namespace Rukia.Infrastructure.Persistence.Configurations
                 .HasDefaultValueSql("timezone('utc', now())")
                 .IsRequired();
 
-            // �ndices: agora Documento � VO -> index por coluna "documento"
-            builder.HasIndex("documento")
+            // ✅ Índices: usar a propriedade CLR (Documento) — NÃO usar "documento" string
+            builder.HasIndex(x => x.Documento)
                 .HasDatabaseName("ix_clientes_documento")
                 .IsUnique()
                 .HasFilter("documento IS NOT NULL");

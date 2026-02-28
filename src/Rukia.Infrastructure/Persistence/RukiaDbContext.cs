@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Rukia.Domain.Clientes;
+using Rukia.Domain.Produtos;
 
 namespace Rukia.Infrastructure.Persistence
 {
@@ -7,9 +8,12 @@ namespace Rukia.Infrastructure.Persistence
 	{
 		public RukiaDbContext(DbContextOptions<RukiaDbContext> options) : base(options) { }
 
-		public DbSet<Cliente> Clientes => Set<Cliente>();
+        
+        public DbSet<Cliente> Clientes => Set<Cliente>();
+        public DbSet<Produto> Produtos => Set<Produto>();
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
 
