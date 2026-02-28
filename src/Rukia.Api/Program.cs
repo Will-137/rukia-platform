@@ -1,3 +1,18 @@
+using Microsoft.EntityFrameworkCore;
+using Rukia.Infrastructure.Persistence;
+
+
+
+app.MapGet("/health/db", async (RukiaDbContext db) =>
+{
+    var ok = await db.Database.CanConnectAsync();
+    return Results.Ok(new { db = ok });
+});
+
+
+
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +21,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+
+
+var cs = builder.Configuration.GetConnectionString("Default");
+
+builder.Services.AddDbContext<RukiaDbContext>(opt =>
+    opt.UseNpgsql(cs));
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
